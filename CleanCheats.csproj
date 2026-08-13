@@ -1,0 +1,63 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <AssemblyName>CleanCheats</AssemblyName>
+    <RootNamespace>CleanCheats</RootNamespace>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+
+    <BannerlordDir Condition="'$(BannerlordDir)' == ''">$(BANNERLORD_GAME_DIR)</BannerlordDir>
+    <RootBinDir>$(BannerlordDir)\bin\Win64_Shipping_Client</RootBinDir>
+    <DistDir>$(MSBuildProjectDirectory)\dist\CleanCheats</DistDir>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- CommandLineFunctionality's exact assembly is unconfirmed - if the
+         build fails on that symbol, check dnSpy for which of these it's
+         actually in and adjust. -->
+    <Reference Include="TaleWorlds.CampaignSystem">
+      <HintPath>$(RootBinDir)\TaleWorlds.CampaignSystem.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="TaleWorlds.Core">
+      <HintPath>$(RootBinDir)\TaleWorlds.Core.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="TaleWorlds.Library">
+      <HintPath>$(RootBinDir)\TaleWorlds.Library.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="TaleWorlds.MountAndBlade">
+      <HintPath>$(RootBinDir)\TaleWorlds.MountAndBlade.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="TaleWorlds.ObjectSystem">
+      <HintPath>$(RootBinDir)\TaleWorlds.ObjectSystem.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="TaleWorlds.ModuleManager">
+      <HintPath>$(RootBinDir)\TaleWorlds.ModuleManager.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="TaleWorlds.Localization">
+      <HintPath>$(RootBinDir)\TaleWorlds.Localization.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+  <Target Name="CheckBannerlordDir" BeforeTargets="Build">
+    <Error Condition="'$(BannerlordDir)' == ''"
+           Text="Set BannerlordDir (or env var BANNERLORD_GAME_DIR) to your Bannerlord install path." />
+  </Target>
+
+  <Target Name="PackageOutput" AfterTargets="Build">
+    <MakeDir Directories="$(DistDir)\bin\Win64_Shipping_Client" />
+    <Copy SourceFiles="$(TargetDir)CleanCheats.dll"
+          DestinationFolder="$(DistDir)\bin\Win64_Shipping_Client" />
+    <Copy SourceFiles="$(MSBuildProjectDirectory)\SubModule.xml"
+          DestinationFolder="$(DistDir)" />
+  </Target>
+
+</Project>

@@ -1,0 +1,22 @@
+<Module>
+	<Name value="Clean Cheats" />
+	<Id value="CleanCheats" />
+	<Version value="v1.0.0" />
+	<DefaultModule value="false" />
+	<SingleplayerModule value="true" />
+	<MultiplayerModule value="false" />
+	<Official value="false" />
+	<Category value="Singleplayer" />
+	<DependedModuleMetadatas>
+		<DependedModuleMetadata id="Native" order="LoadAfterThis" optional="false" />
+		<!-- No SandBox or StoryMode dependency. Commands only use
+		     TaleWorlds.CampaignSystem APIs, so this works in either. -->
+	</DependedModuleMetadatas>
+	<SubModules>
+		<SubModule>
+			<Name value="CleanCheatsSubModule" />
+			<DLLName value="CleanCheats.dll" />
+			<SubModuleClassType value="CleanCheats.SubModule" />
+		</SubModule>
+	</SubModules>
+</Module>
