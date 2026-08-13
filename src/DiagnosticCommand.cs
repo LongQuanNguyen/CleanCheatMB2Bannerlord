@@ -27,8 +27,8 @@ namespace CleanCheats
 
             bool cheatModeLive = Game.Current.CheatMode;
             sb.AppendLine(cheatModeLive
-                ? "cheat_mode: on"
-                : "cheat_mode: off");
+                ? "cheat_mode (live): ON - will re-taint EnabledCheatsBefore on every check"
+                : "cheat_mode (live): off");
 
             bool enabledCheatsBefore = Campaign.Current.EnabledCheatsBefore;
             sb.AppendLine(enabledCheatsBefore
@@ -83,11 +83,35 @@ namespace CleanCheats
                 : $"Version history: {versionsList.Count} versions recorded, check for a downgrade");
         }
 
+        /// <summary>
+        /// Resolves StoryMode.GameComponents.CampaignBehaviors.AchievementsCampaignBehavior
+        /// by scanning every assembly already loaded in the process, rather
+        /// than Type.GetType's simple-name resolution. Bannerlord's module
+        /// loader loads StoryMode.dll through its own mechanism, likely in a
+        /// different AssemblyLoadContext than this mod's own assembly, so
+        /// Type.GetType("...,  StoryMode") can fail to find a type that is
+        /// genuinely loaded and running - confirmed by testing in an actual
+        /// Story Mode campaign. AppDomain.CurrentDomain.GetAssemblies()
+        /// returns every loaded assembly across all contexts in the process,
+        /// sidestepping that boundary entirely. This is the same technique
+        /// Harmony's own AccessTools.TypeByName uses internally.
+        /// </summary>
+        private static Type? ResolveAchievementsType()
+        {
+            foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                if (assembly.GetName().Name == "StoryMode")
+                {
+                    return assembly.GetType("StoryMode.GameComponents.CampaignBehaviors.AchievementsCampaignBehavior");
+                }
+            }
+
+            return null;
+        }
+
         private static void AppendAchievementFlagStatus(StringBuilder sb)
         {
-            Type achievementsType = Type.GetType(
-                "StoryMode.GameComponents.CampaignBehaviors.AchievementsCampaignBehavior, StoryMode",
-                throwOnError: false);
+            Type achievementsType = ResolveAchievementsType();
 
             if (achievementsType == null)
             {
@@ -95,7 +119,7 @@ namespace CleanCheats
                 return;
             }
 
-            MethodInfo genericMethod = typeof(Campaign).GetMethod("GetCampaignBehavior", BindingFlags.Public | BindingFlags.Instance);
+            MethodInfo? genericMethod = typeof(Campaign).GetMethod("GetCampaignBehavior", BindingFlags.Public | BindingFlags.Instance);
             object? behaviorInstance = genericMethod?.MakeGenericMethod(achievementsType).Invoke(Campaign.Current, null);
 
             if (behaviorInstance == null)
@@ -104,7 +128,7 @@ namespace CleanCheats
                 return;
             }
 
-            FieldInfo field = achievementsType.GetField("_deactivateAchievements", PrivateInstance);
+            FieldInfo? field = achievementsType.GetField("_deactivateAchievements", PrivateInstance);
             if (field == null)
             {
                 sb.AppendLine("Achievement deactivation flag: unavailable (field may have been renamed, check dnSpy)");
