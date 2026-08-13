@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -26,8 +27,8 @@ namespace CleanCheats
 
             bool cheatModeLive = Game.Current.CheatMode;
             sb.AppendLine(cheatModeLive
-                ? "cheat_mode (live): ON - will re-taint EnabledCheatsBefore on every check"
-                : "cheat_mode (live): off");
+                ? "cheat_mode: on"
+                : "cheat_mode: off");
 
             bool enabledCheatsBefore = Campaign.Current.EnabledCheatsBefore;
             sb.AppendLine(enabledCheatsBefore
@@ -36,9 +37,7 @@ namespace CleanCheats
 
             AppendModuleHistoryStatus(sb);
             AppendVersionHistoryStatus(sb);
-
-            sb.AppendLine();
-            sb.AppendLine("Does not check StoryMode's AchievementsCampaignBehavior._deactivateAchievements, since this mod has no StoryMode dependency. Check Achievement Patch's own log for that flag.");
+            AppendAchievementFlagStatus(sb);
 
             return sb.ToString();
         }
@@ -82,6 +81,40 @@ namespace CleanCheats
             sb.AppendLine(versionsList.Count <= 1
                 ? "Version history: clean (single version recorded)"
                 : $"Version history: {versionsList.Count} versions recorded, check for a downgrade");
+        }
+
+        private static void AppendAchievementFlagStatus(StringBuilder sb)
+        {
+            Type achievementsType = Type.GetType(
+                "StoryMode.GameComponents.CampaignBehaviors.AchievementsCampaignBehavior, StoryMode",
+                throwOnError: false);
+
+            if (achievementsType == null)
+            {
+                sb.AppendLine("Achievement deactivation flag: not applicable (StoryMode not loaded)");
+                return;
+            }
+
+            MethodInfo genericMethod = typeof(Campaign).GetMethod("GetCampaignBehavior", BindingFlags.Public | BindingFlags.Instance);
+            object? behaviorInstance = genericMethod?.MakeGenericMethod(achievementsType).Invoke(Campaign.Current, null);
+
+            if (behaviorInstance == null)
+            {
+                sb.AppendLine("Achievement deactivation flag: unavailable (behavior instance not found)");
+                return;
+            }
+
+            FieldInfo field = achievementsType.GetField("_deactivateAchievements", PrivateInstance);
+            if (field == null)
+            {
+                sb.AppendLine("Achievement deactivation flag: unavailable (field may have been renamed, check dnSpy)");
+                return;
+            }
+
+            bool deactivated = (bool)field.GetValue(behaviorInstance);
+            sb.AppendLine(deactivated
+                ? "Achievement deactivation flag: TAINTED (latches permanently until corrected)"
+                : "Achievement deactivation flag: clean");
         }
     }
 }
