@@ -14,9 +14,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- CommandLineFunctionality's exact assembly is unconfirmed - if the
-         build fails on that symbol, check dnSpy for which of these it's
-         actually in and adjust. -->
     <Reference Include="TaleWorlds.CampaignSystem">
       <HintPath>$(RootBinDir)\TaleWorlds.CampaignSystem.dll</HintPath>
       <Private>false</Private>

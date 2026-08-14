@@ -83,19 +83,6 @@ namespace CleanCheats
                 : $"Version history: {versionsList.Count} versions recorded, check for a downgrade");
         }
 
-        /// <summary>
-        /// Resolves StoryMode.GameComponents.CampaignBehaviors.AchievementsCampaignBehavior
-        /// by scanning every assembly already loaded in the process, rather
-        /// than Type.GetType's simple-name resolution. Bannerlord's module
-        /// loader loads StoryMode.dll through its own mechanism, likely in a
-        /// different AssemblyLoadContext than this mod's own assembly, so
-        /// Type.GetType("...,  StoryMode") can fail to find a type that is
-        /// genuinely loaded and running - confirmed by testing in an actual
-        /// Story Mode campaign. AppDomain.CurrentDomain.GetAssemblies()
-        /// returns every loaded assembly across all contexts in the process,
-        /// sidestepping that boundary entirely. This is the same technique
-        /// Harmony's own AccessTools.TypeByName uses internally.
-        /// </summary>
         private static Type? ResolveAchievementsType()
         {
             foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())

@@ -5,25 +5,20 @@ ever setting `cheat_mode`, so achievements stay unlockable.
 
 ## Why this exists
 
-Vanilla cheat commands (`campaign.add_gold_to_hero`, etc.) all call
-`CampaignCheats.CheckCheatUsage`, which requires `cheat_mode` to be on.
-Once on, `DumpIntegrityCampaignBehavior.CheckCheatUsage()` re-taints
-`Campaign.EnabledCheatsBefore` on every check, permanently, for as long as
-`cheat_mode` stays enabled - no reflection-based fix can outrun that, since
-it re-derives the taint from live engine state rather than storing a
-one-time flag. 
+Every time a vanilla cheat command is called, the game checks whether the ```cheat_mode``` setting is on. If ``cheat_mode`` is on, the check also flags the save file as tainted, making achievements unavailable for that save from that point on.
 
-Each command provided by this mod calls the same underlying game action a vanilla cheat would but skips the `CheckCheatUsage` gate entirely, so `cheat_mode` never
-needs to be touched.
+Each command in this mod does the same thing a vanilla cheat would, but skips that check entirely, so the save never gets flagged, and cheat_mode never needs to be turned on.
 
 ## Installing
 
-Copy `dist\CleanCheats\` into `<BannerlordDir>\Modules\CleanCheats\`.
+Copy `dist\CleanCheats\` into `<BannerlordDir>\Modules\`.
 
 ## Enabling
 
-Enable "Clean Cheats" in the Bannerlord Launcher's Mods tab. Use commands
-via the in-game console (Alt + `~`) - no `cheat_mode` toggle needed.
+Enable "Clean Cheats" in the Bannerlord Launcher's Mods tab. 
+
+## Using
+Use commands via the in-game console (Alt + `~`).
 
 ## Commands
 
@@ -45,15 +40,14 @@ via the in-game console (Alt + `~`) - no `cheat_mode` toggle needed.
 | `cleancheats.check_taint` | Reports current cheat/module/version taint status |
 
 
-More can be added by finding the vanilla command's implementation
-in `TaleWorlds.CampaignSystem.CampaignCheats`, via dnSpy inspection on "~\SteamLibrary\steamapps\common\Mount & Blade II Bannerlord\bin\Win64_Shipping_Client\TaleWorlds.CampaignSystem.dll". Copy
-and drop the `CheckCheatUsage` guard  clause.
+More can be added by finding and re-implement the vanilla command's implementation
+in `TaleWorlds.CampaignSystem.CampaignCheats`, by dnSpy inspection on `<BannerlordDir>\bin\Win64_Shipping_Client\TaleWorlds.CampaignSystem.dll`.
 
 ## Self-tainting by presence
 
 Being a third-party module trips the official-module check
 (`CheckIfModulesAreDefault`) on its own, regardless of whether any command
-is used. This mod also patches that check, so its own presence doesn't
+is used. This mod also patches that check, so its presence doesn't
 taint the save or disable achievements.
 
 ## Building (optional)
