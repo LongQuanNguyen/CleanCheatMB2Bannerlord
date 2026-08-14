@@ -29,12 +29,21 @@ via the in-game console (Alt + `~`) - no `cheat_mode` toggle needed.
 
 | Command | Effect |
 |---|---|
-| `cleancheats.add_gold [amount]` | Adds gold to the main hero, mirrors `campaign.add_gold_to_hero` |
-| `cleancheats.add_influence [amount]` | Adds influence to the player's clan, mirrors `campaign.add_influence` |
-| `cleancheats.add_troops [TroopId] [amount]` | Adds troops to your own party, mirrors `campaign.add_troops`|
-| `cleancheats.add_renown [amount]` | Adds renown to the player's own clan, mirrors `campaign.add_renown_to_clan` |
-| `cleancheats.conceive_child` | Starts a pregnancy for the player/spouse, mirrors `campaign.conceive_child` |
+| `cleancheats.add_gold` | Adds gold to the main hero |
+| `cleancheats.add_influence` | Adds influence to the player's clan |
+| `cleancheats.add_troops` | Adds troops to your own party |
+| `cleancheats.add_renown` | Adds renown to the player's own clan |
+| `cleancheats.conceive_child` | Starts a pregnancy for the player/spouse |
+| `cleancheats.set_hero_culture` | Sets a lord or wanderer's culture |
+| `cleancheats.set_loyalty_of_settlement` | Sets a town/castle's loyalty (0-100) |
+| `cleancheats.set_prosperity_of_settlement` | Sets a town/castle's prosperity |
+| `cleancheats.set_militia_of_settlement` | Sets a settlement's militia |
+| `cleancheats.set_security_of_settlement` | Sets a town/castle's security |
+| `cleancheats.set_food_of_settlement` | Sets a town/castle's food stocks |
+| `cleancheats.set_hearth_of_settlement` | Sets a village's hearth |
+| `cleancheats.add_building_level` | Increases a building's level by 1 |
 | `cleancheats.check_taint` | Reports current cheat/module/version taint status |
+
 
 More can be added by finding the vanilla command's implementation
 in `TaleWorlds.CampaignSystem.CampaignCheats`, via dnSpy inspection on "~\SteamLibrary\steamapps\common\Mount & Blade II Bannerlord\bin\Win64_Shipping_Client\TaleWorlds.CampaignSystem.dll". Copy
