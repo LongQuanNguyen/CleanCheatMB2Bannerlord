@@ -30,6 +30,9 @@ Use commands via the in-game console (Alt + `~`).
 | `cleancheats.add_renown` | Adds renown to the player's own clan |
 | `cleancheats.conceive_child` | Starts a pregnancy for the player/spouse |
 | `cleancheats.set_hero_culture` | Sets a lord or wanderer's culture |
+| `cleancheats.set_player_trait` | Sets one of the player's reputation traits |
+| `cleancheats.marry_hero_to_hero` | Marries two heroes, if suitable |
+| `cleancheats.add_skill_xp_to_hero` | Adds skill xp to a hero |
 | `cleancheats.set_loyalty_of_settlement` | Sets a town/castle's loyalty (0-100) |
 | `cleancheats.set_prosperity_of_settlement` | Sets a town/castle's prosperity |
 | `cleancheats.set_militia_of_settlement` | Sets a settlement's militia |
@@ -38,6 +41,7 @@ Use commands via the in-game console (Alt + `~`).
 | `cleancheats.set_hearth_of_settlement` | Sets a village's hearth |
 | `cleancheats.add_building_level` | Increases a building's level by 1 |
 | `cleancheats.check_taint` | Reports current cheat/module/version taint status |
+
 
 
 More can be added by finding and re-implement the vanilla command's implementation
