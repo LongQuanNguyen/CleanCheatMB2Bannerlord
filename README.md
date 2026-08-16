@@ -33,6 +33,8 @@ Use commands via the in-game console (Alt + `~`).
 | `cleancheats.set_player_trait` | Sets one of the player's reputation traits |
 | `cleancheats.marry_hero_to_hero` | Marries two heroes, if suitable |
 | `cleancheats.add_skill_xp_to_hero` | Adds skill xp to a hero |
+| `cleancheats.add_focus_points_to_hero` | Adds focus points to a hero |
+| `cleancheats.add_attribute_points_to_hero` | Adds attribute points to a hero |
 | `cleancheats.set_loyalty_of_settlement` | Sets a town/castle's loyalty (0-100) |
 | `cleancheats.set_prosperity_of_settlement` | Sets a town/castle's prosperity |
 | `cleancheats.set_militia_of_settlement` | Sets a settlement's militia |

@@ -115,5 +115,114 @@ namespace CleanCheats
             return "They are not suitable for marriage";
         }
 
+        // Token: 0x060003AE RID: 942 RVA: 0x0001BF6C File Offset: 0x0001A16C
+        [CommandLineFunctionality.CommandLineArgumentFunction("add_focus_points_to_hero", "cleancheats")]
+        public static string AddFocusPointCheat(List<string> strings)
+        {
+            string usage = "Format is \"cleancheats.add_focus_points_to_hero [HeroName] | [PositiveNumber]\".";
+ 
+            if (CampaignCheats.CheckHelp(strings))
+            {
+                return usage;
+            }
+ 
+            if (CampaignCheats.CheckParameters(strings, 0))
+            {
+                Hero.MainHero.HeroDeveloper.UnspentFocusPoints =
+                    MBMath.ClampInt(Hero.MainHero.HeroDeveloper.UnspentFocusPoints + 1, 0, int.MaxValue);
+                return $"1 focus points added to the {Hero.MainHero.Name}. ";
+            }
+ 
+            List<string> separatedNames = CampaignCheats.GetSeparatedNames(strings, false);
+ 
+            if (separatedNames.Count == 1)
+            {
+                bool parsed = int.TryParse(separatedNames[0], out int amount);
+                if (amount <= 0 && parsed)
+                {
+                    return "Please enter a positive number\n" + usage;
+                }
+ 
+                Hero.MainHero.HeroDeveloper.UnspentFocusPoints =
+                    MBMath.ClampInt(Hero.MainHero.HeroDeveloper.UnspentFocusPoints + amount, 0, 10000);
+                return $"{amount} focus points added to the {Hero.MainHero.Name}. ";
+            }
+ 
+            if (separatedNames.Count != 2)
+            {
+                return usage;
+            }
+ 
+            if (!CampaignCheats.TryGetObject<Hero>(separatedNames[0], out Hero targetHero, out string error, null))
+            {
+                return error;
+            }
+ 
+            if (int.TryParse(separatedNames[1], out int specifiedAmount))
+            {
+                targetHero.HeroDeveloper.UnspentFocusPoints =
+                    MBMath.ClampInt(targetHero.HeroDeveloper.UnspentFocusPoints + specifiedAmount, 0, 10000);
+                return $"{specifiedAmount} focus points added to the {targetHero.Name}. ";
+            }
+ 
+            targetHero.HeroDeveloper.UnspentFocusPoints =
+                MBMath.ClampInt(targetHero.HeroDeveloper.UnspentFocusPoints + 1, 0, 10000);
+            return $"1 focus points added to the {targetHero.Name}. ";
+        }
+        
+        // Token: 0x060003AF RID: 943 RVA: 0x0001C130 File Offset: 0x0001A330
+        [CommandLineFunctionality.CommandLineArgumentFunction("add_attribute_points_to_hero", "cleancheats")]
+        public static string AddAttributePointsCheat(List<string> strings)
+        {
+            string usage = "Format is \"cleancheats.add_attribute_points_to_hero [HeroName] | [PositiveNumber]\".";
+ 
+            if (CampaignCheats.CheckHelp(strings))
+            {
+                return usage;
+            }
+ 
+            if (CampaignCheats.CheckParameters(strings, 0))
+            {
+                Hero.MainHero.HeroDeveloper.UnspentAttributePoints =
+                    MBMath.ClampInt(Hero.MainHero.HeroDeveloper.UnspentAttributePoints + 1, 0, 10000);
+                return $"1 attribute points added to the {Hero.MainHero.Name}. ";
+            }
+ 
+            List<string> separatedNames = CampaignCheats.GetSeparatedNames(strings, false);
+ 
+            if (separatedNames.Count == 1)
+            {
+                bool parsed = int.TryParse(separatedNames[0], out int amount);
+                if (amount <= 0 || !parsed)
+                {
+                    return "Please enter a positive number\n" + usage;
+                }
+ 
+                Hero.MainHero.HeroDeveloper.UnspentAttributePoints =
+                    MBMath.ClampInt(Hero.MainHero.HeroDeveloper.UnspentAttributePoints + amount, 0, 10000);
+                return $"{amount} attribute points added to the {Hero.MainHero.Name}. ";
+            }
+ 
+            if (separatedNames.Count != 2)
+            {
+                return usage;
+            }
+ 
+            if (!CampaignCheats.TryGetObject<Hero>(separatedNames[0], out Hero targetHero, out string error, null))
+            {
+                return error;
+            }
+ 
+            if (int.TryParse(separatedNames[1], out int specifiedAmount))
+            {
+                targetHero.HeroDeveloper.UnspentAttributePoints =
+                    MBMath.ClampInt(targetHero.HeroDeveloper.UnspentAttributePoints + specifiedAmount, 0, 10000);
+                return $"{specifiedAmount} attribute points added to the {targetHero.Name}. ";
+            }
+ 
+            targetHero.HeroDeveloper.UnspentAttributePoints =
+                MBMath.ClampInt(targetHero.HeroDeveloper.UnspentAttributePoints + 1, 0, 10000);
+            return $"1 attribute points added to the {targetHero.Name}. ";
+        }
     }
 }
