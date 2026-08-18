@@ -42,6 +42,7 @@ Use commands via the in-game console (Alt + `~`).
 | `cleancheats.set_food_of_settlement` | Sets a town/castle's food stocks |
 | `cleancheats.set_hearth_of_settlement` | Sets a village's hearth |
 | `cleancheats.add_building_level` | Increases a building's level by 1 |
+| `cleancheats.add_item_to_player_party` | Adds an item, optionally with a quality modifier, to your party |
 | `cleancheats.check_taint` | Reports current cheat/module/version taint status |
 
 
