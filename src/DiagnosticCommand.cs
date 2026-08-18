@@ -10,7 +10,7 @@ using TaleWorlds.ModuleManager;
 
 namespace CleanCheats
 {
-    public static class DiagnosticCommand
+    public static class DiagnosticCommands
     {
         private const BindingFlags PrivateInstance = BindingFlags.NonPublic | BindingFlags.Instance;
 
@@ -38,6 +38,47 @@ namespace CleanCheats
             AppendModuleHistoryStatus(sb);
             AppendVersionHistoryStatus(sb);
             AppendAchievementFlagStatus(sb);
+
+            return sb.ToString();
+        }
+
+        [CommandLineFunctionality.CommandLineArgumentFunction("clear_taint", "cleancheats")]
+        public static string ClearTaint(List<string> strings)
+        {
+            if (Campaign.Current == null)
+            {
+                return "No active campaign.";
+            }
+
+            if (Game.Current.CheatMode)
+            {
+                return "cheat_mode is currently ON. Clearing now would be undone immediately - "
+                     + "the game re-taints EnabledCheatsBefore on every check while cheat_mode stays on, "
+                     + "so nothing done here would stick.\n"
+                     + "Run \"config.cheat_mode 0\" in the console first, then run cleancheats.clear_taint again.";
+            }
+
+            var sb = new StringBuilder();
+            sb.AppendLine("=== Clearing Taint ===");
+
+            TaintCorrection.ClearCheatFlag();
+            sb.AppendLine("Cleared EnabledCheatsBefore.");
+
+            bool historyCorrected = TaintCorrection.ClearModuleAndVersionHistory();
+            sb.AppendLine(historyCorrected
+                ? "Cleared module/version history."
+                : "Module/version history: nothing to clear or fields unavailable.");
+
+            bool? achievementResult = TaintCorrection.ClearAchievementDeactivationFlag();
+            sb.AppendLine(achievementResult switch
+            {
+                null => "Achievement deactivation flag: not applicable (StoryMode not loaded).",
+                true => "Cleared achievement deactivation flag.",
+                false => "Achievement deactivation flag: unavailable (behavior or field not found)."
+            });
+
+            sb.AppendLine();
+            sb.AppendLine("Done. Run cleancheats.check_taint to confirm.");
 
             return sb.ToString();
         }
@@ -83,22 +124,9 @@ namespace CleanCheats
                 : $"Version history: {versionsList.Count} versions recorded, check for a downgrade");
         }
 
-        private static Type? ResolveAchievementsType()
-        {
-            foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
-            {
-                if (assembly.GetName().Name == "StoryMode")
-                {
-                    return assembly.GetType("StoryMode.GameComponents.CampaignBehaviors.AchievementsCampaignBehavior");
-                }
-            }
-
-            return null;
-        }
-
         private static void AppendAchievementFlagStatus(StringBuilder sb)
         {
-            Type achievementsType = ResolveAchievementsType();
+            Type? achievementsType = TaintCorrection.ResolveAchievementsType();
 
             if (achievementsType == null)
             {
