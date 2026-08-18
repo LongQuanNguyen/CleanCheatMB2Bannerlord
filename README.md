@@ -44,6 +44,7 @@ Use commands via the in-game console (Alt + `~`).
 | `cleancheats.add_building_level` | Increases a building's level by 1 |
 | `cleancheats.add_item_to_player_party` | Adds an item, optionally with a quality modifier, to your party |
 | `cleancheats.check_taint` | Reports current cheat/module/version taint status |
+| `cleancheats.clear_taint` | Cleans current session save from taint status |
 
 
 
